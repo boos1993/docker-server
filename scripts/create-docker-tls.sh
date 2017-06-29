@@ -115,17 +115,17 @@ else
   echo " =>   DOCKER_TLS_VERIFY=1"
 fi
 
-OPTIONS="--tlsverify --tlscacert=$HOME/.docker/ca.pem --tlscert=$HOME/.docker/server-cert.pem --tlskey=$HOME/.docker/server-key.pem -H=0.0.0.0:2376"
-if [ -f "/etc/sysconfig/docker" ]; then
-  echo " => Configuring /etc/sysconfig/docker"
-  BACKUP="/etc/sysconfig/docker.$(date +"%s")"
-  sudo mv /etc/sysconfig/docker $BACKUP
-  sudo sh -c "echo '# The following line was added by ./create-certs docker TLS configuration script
-OPTIONS=\"$OPTIONS\"
-# A backup of the old file is at $BACKUP.' >> /etc/sysconfig/docker"
-  echo " => Backup file location: $BACKUP"
+OPTIONS=" --tlsverify --tlscacert=$HOME/.docker/ca.pem --tlscert=$HOME/.docker/server-cert.pem --tlskey=$HOME/.docker/server-key.pem -H=0.0.0.0:2376"
+if [ -f "/etc/systemd/system/docker.service" ]; then
+  echo " => Configuring /etc/systemd/system/docker.service"
+  touch "/etc/systemd/system/docker.service"
+
+  sudo sh -c "echo '[Service]
+Environment=\"DOCKER_OPTS=$OPTIONS\"
+ExecStart=/usr/bin/dockerd \$DOCKER_OPTS -H unix:///var/run/docker.sock -H fd://' >> /etc/systemd/system/docker.service"
+
 else
-  echo " => WARNING: No /etc/sysconfig/docker file found on your system."
+  echo " => WARNING: Systemd installation not detected"
   echo " =>   You will need to configure your docker daemon with the following options:"
   echo " =>   $OPTIONS" 
 fi

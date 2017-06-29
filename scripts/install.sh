@@ -31,19 +31,20 @@ sudo apt-get update
 apt-cache policy docker-ce
 sudo apt-get install -y docker-ce
 
-
 # Configure Docker to start on boot:
 systemctl enable docker
+systemctl start docker
 
 # Setup Docker tls
 ./create-docker-tls.sh $HOSTNAME
-dockerd --tlsverify --tlscacert=/root/.docker/ca.pem --tlscert=/root/.docker/server-cert.pem --tlskey=/root/.docker/server-key.pem -H=0.0.0.0:2376
+
+systemctl daemon-reload
+systemctl restart docker
 
 # Setup non-root user
 if id "$NONROOTUSER" >/dev/null 2>&1; then
         echo "Non-root user already exists"
 else
-  adduser $NONROOTUSER
   usermod -aG sudo $NONROOTUSER
 fi
 
@@ -53,3 +54,6 @@ sed -i '/%sudo   ALL=(ALL:ALL) ALL/c\%sudo   ALL=(ALL) NOPASSWD:ALL' /etc/sudoer
 
 # Expire the root password
 sudo passwd -l root
+
+# Copy the docker keys out of root
+sudo cp -r /root/.docker ~/docker-keys
