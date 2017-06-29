@@ -1,5 +1,7 @@
 # Installation
 
+This repo contains scripts and instructions for creating a docker remote host that can be accessed securely over TLS. It is intented to be run on a KVM VPS running Ubuntu 16.10.
+
 ## Set hostname on VPS Control panel
 
     hostname <HOSTNAME>
