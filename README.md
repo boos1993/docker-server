@@ -1,5 +1,7 @@
 # Installation
 
+This repo contains scripts and instructions for creating a docker remote host that can be accessed securely over TLS. It is intented to be run on a KVM VPS running Ubuntu 16.10.
+
 These commands will need to be run from a bash command line on either a unix machine or under cygwin/git-bash/bash-for-windows on a windows machine.
 
 ## SSH into the server as a NON-ROOT user with sudo permissions:
