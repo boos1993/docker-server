@@ -116,7 +116,7 @@ else
 fi
 
 OPTIONS=" --tlsverify --tlscacert=$HOME/.docker/ca.pem --tlscert=$HOME/.docker/server-cert.pem --tlskey=$HOME/.docker/server-key.pem -H=0.0.0.0:2376"
-if [ -f "/etc/systemd/system/docker.service" ]; then
+if [ -f "/etc/systemd/system/" ]; then
   echo " => Configuring /etc/systemd/system/docker.service"
   touch "/etc/systemd/system/docker.service"
 

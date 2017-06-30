@@ -3,15 +3,8 @@
 #   ./install.sh <non-root user>
 
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
+   echo "This script must be run using sudo" 
    exit 1
-fi
-
-if [ "$#" -gt 0 ]; then
-  NONROOTUSER="$1"
-else
-  echo " => ERROR: You must specify the non-root user as the first arguement to this script <="
-  exit 1
 fi
 
 # Install misc packages
@@ -41,19 +34,9 @@ systemctl start docker
 systemctl daemon-reload
 systemctl restart docker
 
-# Setup non-root user
-if id "$NONROOTUSER" >/dev/null 2>&1; then
-        echo "Non-root user already exists"
-else
-  usermod -aG sudo $NONROOTUSER
-fi
-
 # Do not require password re-entry for sudoers
 sed -i '/%sudo   ALL=(ALL:ALL) ALL/c\%sudo   ALL=(ALL) NOPASSWD:ALL' /etc/sudoers
 
 
 # Expire the root password
 sudo passwd -l root
-
-# Copy the docker keys out of root
-sudo cp -r /root/.docker ~/docker-keys

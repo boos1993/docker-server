@@ -1,12 +1,12 @@
 # Installation
 
-## Set hostname on VPS Control panel
+These commands will need to be run from a bash command line on either a unix machine or under cygwin/git-bash/bash-for-windows on a windows machine.
 
-    hostname <HOSTNAME>
-
-## SSH into the server:
+## SSH into the server as a NON-ROOT user with sudo permissions:
 
     ssh <USER>@<HOSTNAME>
+
+    hostname <HOSTNAME>
 
     git clone https://github.com/boos1993/docker-server.git && cd ./docker-server/scripts/
 
@@ -21,23 +21,12 @@
 ### Unix:  
 
     mkdir -pv ~/.docker
-    scp -r <USER>@<HOSTNAME>:/home/<USER>/docker-keys/{ca,cert,key}.pem ~./docker"
-
-### Windows:  
-
-    mkdir -pv %USERPROFILE%/.docker
-    scp -r <USER>@<HOSTNAME>:/home/<USER>/docker-keys/{ca,cert,key}.pem %USERPROFILE%/.docker/"
+    scp -r <USER>@<HOSTNAME>:/home/<USER>/.docker/{ca,cert,key}.pem ~/.docker
 
 ## Securing the client automatically
 
-### Unix:  
-
-    export DOCKER_HOST=tcp://$HOST:2376 DOCKER_TLS_VERIFY=1
-
-### Windows:  
-
-    setx DOCKER_HOST tcp://<HOSTNAME>:2376
-    setx DOCKER_TLS_VERIFY 1
+    export DOCKER_HOST=tcp://<HOSTNAME>:2376
+    export DOCKER_TLS_VERIFY=1
 
 ## Securing the client manually
 
@@ -54,6 +43,8 @@
     docker-compose --tlsverify --tlscacert=~/.docker/ca.pem --tlscert=~/.docker/cert.pem --tlskey=~/.docker/key.pem -H=<HOSTNAME>:2376  up -d
 
 ### Windows:  
+
+These commands can be natively run on a windows machine.
 
 #### Format:
 
