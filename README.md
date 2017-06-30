@@ -14,7 +14,7 @@ These commands will need to be run from a bash command line on either a unix mac
 
     sudo chmod +x install.sh && chmod +x create-docker-tls.sh
 
-    sudo ./install.sh <username-goes-here>
+    sudo ./install.sh
 
     exit
 
