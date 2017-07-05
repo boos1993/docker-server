@@ -61,7 +61,7 @@ These commands can be natively run on a windows machine.
 
 ## Add scripts to run local docker instead of remote
 
-    You just configured your local machine to default to communicating with the remote server but you still need an easy way to access your local docker CLI. This can be accomplished with the aid of a simple script and some aliases. All it does is unset (and save) the environment variables with the configuration for the remote docker host, runs the docker cli command and then exports the environment variables so that they are back to normal. The result is that you can interact with your local docker CLI but just prepending an `l` to the beginning of the command.
+You just configured your local machine to default to communicating with the remote server but you still need an easy way to access your local docker CLI. This can be accomplished with the aid of a simple script and some aliases. All it does is unset (and save) the environment variables with the configuration for the remote docker host, runs the docker cli command and then exports the environment variables so that they are back to normal. The result is that you can interact with your local docker CLI but just prepending an `l` to the beginning of the command.
 
         mkdir -pv ~/.docker/scripts
         curl -o ~/.docker/scripts/local-docker.sh https://raw.githubusercontent.com/boos1993/docker-server/master/scripts/local-docker.sh
