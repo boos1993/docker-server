@@ -26,7 +26,7 @@ Or you can generate new ones:
 
 Then setup the docker daemon to use those certificates:
     
-    sudo ./setup-docker-tls.sh <HOSTNAME>
+    sudo ./setup-docker-tls.sh
 
 It is always a good idea to expire the root password:
     

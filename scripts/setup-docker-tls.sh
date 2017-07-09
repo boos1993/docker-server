@@ -15,14 +15,6 @@
 #
 
 set -e
-STR=2048
-if [ "$#" -gt 0 ]; then
-  DOCKER_HOST="$1"
-else
-  echo " => ERROR: You must specify your wildcard domain as the first argument to this scripts! <="
-  exit 1
-fi
-
 if [[ $EUID -ne 0 ]]; then
    echo "This script should be run as root" 
    exit 1
