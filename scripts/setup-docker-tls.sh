@@ -32,7 +32,7 @@ OPTIONS=" --tlsverify --tlscacert=$HOME/.docker/ca.pem --tlscert=$HOME/.docker/s
 if [ -d "/etc/systemd/system/" ]; then
 
   echo " => Configuring /etc/systemd/system/docker.service"
-  rm "/etc/systemd/system/docker.service"
+  rm -f "/etc/systemd/system/docker.service"
   touch "/etc/systemd/system/docker.service"
 
   sudo sh -c "echo '[Service]
