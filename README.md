@@ -1,6 +1,6 @@
 # Installation
 
-This repo contains scripts and instructions for creating a docker remote host that can be accessed securely over TLS. It is intented to be run on a KVM VPS running Ubuntu 16.10.
+This repo contains scripts and instructions for creating a docker remote host that can be accessed securely over TLS. It is intended to be run on a KVM VPS running Ubuntu 16.10.
 
 These commands will need to be run from a bash command line on either a unix machine or under cygwin/git-bash/bash-for-windows on a windows machine.
 
@@ -12,11 +12,26 @@ These commands will need to be run from a bash command line on either a unix mac
 
     git clone https://github.com/boos1993/docker-server.git && cd ./docker-server/scripts/
 
-    sudo chmod +x install.sh && chmod +x create-docker-tls.sh
+    sudo chmod +x **/*.sh
 
-    sudo ./install.sh
+    sudo ./install-docker.sh
 
-    exit
+If you already have TLS keys, you can copy them to the server:
+
+    scp -r -P 2222 /local/path/to/docker/keys/*.pem <USER>@<HOSTNAME>:/home/ubuntu/.docker/
+
+Or you can generate new ones:
+
+    ./create-docker-tls.sh <WILDCARD DOMAIN>
+
+Then setup the docker daemon to use those certificates:
+    
+    ./setup-docker-tls.sh <HOSTNAME>
+
+It is always a good idea to expire the root password:
+    
+    sudo passwd -l root
+
 
 ## Copy docker keys to the client
 

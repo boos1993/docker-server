@@ -1,33 +1,31 @@
 #!/bin/bash
-# # This script will help you setup Docker for TLS authentication.
-# Run it passing in the arguement for the FQDN of your docker server
+# Thanks for the jump-start!:
+#   https://gist.github.com/Stono/7e6fed13cfd79598eb15#file-create-docker-tls-sh
+#
+# This script will help you generate certs for docker TLS auth.
+# To run it, you pass the wildcard to your custom domain name
 #
 # For example:
-#    ./create-docker-tls.sh myhost.docker.com
-# 
-# The script will also create a profile.d (if it exists) entry 
-# which configures your docker client to use TLS
+#    ./setup-docker-tls.sh *.mydomain.com
 #
 # We will also overwrite /etc/sysconfig/docker (again, if it exists) to configure the daemon.  
 # A backup will be created at /etc/sysconfig/docker.unixTimestamp
 #
-# MIT License applies to this script.  I don't accept any responsibility for 
-# damage you may cause using it.
+# As per the original author, the MIT License applies to this script
 #
-# https://gist.github.com/Stono/7e6fed13cfd79598eb15#file-create-docker-tls-sh
 
 set -e
 STR=2048
 if [ "$#" -gt 0 ]; then
   DOCKER_HOST="$1"
 else
-  echo " => ERROR: You must specify the docker FQDN as the first arguement to this scripts! <="
+  echo " => ERROR: You must specify your wildcard domain as the first argument to this scripts! <="
   exit 1
 fi
 
-if [ "$USER" == "root" ]; then
-  echo " => WARNING: You're running this script as root, therefore root will be configured to talk to docker"
-  echo " => If you want to have other users query docker too, you'll need to symlink /root/.docker to /theuser/.docker"
+if [[ $EUID -e 0 ]]; then
+   echo "This script should not be run as root" 
+   exit 1
 fi
 
 echo " => Using Hostname: $DOCKER_HOST  You MUST connect to docker using this host!"
@@ -99,37 +97,3 @@ openssl x509 \
   -CAkey ca-key.pem \
   -out cert.pem \
   -extfile extfile.cnf
-
-if [ -d "/etc/profile.d" ]; then
-  echo " => Creating profile.d/docker"
-  sudo sh -c "echo '#!/bin/bash 
-export DOCKER_CERT_PATH=/home/$USER/.docker
-export DOCKER_HOST=tcp://$DOCKER_HOST:2376
-export DOCKER_TLS_VERIFY=1' > /etc/profile.d/docker.sh"
-  sudo chmod +x /etc/profile.d/docker.sh
-  source /etc/profile.d/docker.sh
-else
-  echo " => WARNING: No /etc/profile.d directoy on your system."
-  echo " =>   You will need to set the following environment variables before running the docker client:"
-  echo " =>   DOCKER_HOST=tcp://$DOCKER_HOST:2376"
-  echo " =>   DOCKER_TLS_VERIFY=1"
-fi
-
-OPTIONS=" --tlsverify --tlscacert=$HOME/.docker/ca.pem --tlscert=$HOME/.docker/server-cert.pem --tlskey=$HOME/.docker/server-key.pem -H=0.0.0.0:2376"
-if [ -d "/etc/systemd/system/" ]; then
-  echo " => Configuring /etc/systemd/system/docker.service"
-  touch "/etc/systemd/system/docker.service"
-
-  sudo sh -c "echo '[Service]
-Environment=\"DOCKER_OPTS=$OPTIONS\"
-ExecStart=/usr/bin/dockerd \$DOCKER_OPTS -H unix:///var/run/docker.sock -H fd://' >> /etc/systemd/system/docker.service"
-
-else
-  echo " => WARNING: Systemd installation not detected"
-  echo " =>   You will need to configure your docker daemon with the following options:"
-  echo " =>   $OPTIONS" 
-fi
-
-export DOCKER_HOST=tcp://DOCKER_HOST:2376
-export DOCKER_TLS_VERIFY=1
-echo " => Done! You just need to restart docker for the changes to take effect"
