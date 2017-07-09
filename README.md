@@ -12,7 +12,7 @@ These commands will need to be run from a bash command line on either a unix mac
 
     git clone https://github.com/boos1993/docker-server.git && cd ./docker-server/scripts/
 
-    sudo chmod +x **/*.sh
+    sudo chmod +x *.sh
 
     sudo ./install-docker.sh
 
